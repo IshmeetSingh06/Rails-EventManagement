@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_21_082856) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_21_100450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_21_082856) do
     t.datetime "date_time"
     t.bigint "organizer_id", null: false
     t.integer "capacity"
-    t.boolean "cancelled"
+    t.boolean "cancelled", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organizer_id"], name: "index_events_on_organizer_id"
