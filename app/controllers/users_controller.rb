@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
   def create
-    user = UserService.register_user(user_params)
-    if user.valid?
-      render json: { token: user.authentication_token }, status: :created
+    result = UserService.register_user(user_params)
+    if result.is_a?(User)
+      render json: { message: "User Created Successfully" }, status: :created
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      render json: result, status: :unprocessable_entity
     end
   end
 

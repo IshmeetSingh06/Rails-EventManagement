@@ -3,11 +3,10 @@ class UserService
     def register_user(user_params)
       user = User.new(user_params)
       user.authentication_token = generate_auth_token
-
       if user.save
         user
       else
-        user.errors.full_messages
+        { errors: user.errors.full_messages }
       end
     end
 
