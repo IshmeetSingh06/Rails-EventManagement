@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_secure_password
   enum role: { admin: 0, guest: 1 }
 
   has_many :registrations
