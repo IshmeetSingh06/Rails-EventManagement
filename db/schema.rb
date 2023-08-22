@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_22_051149) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_22_083751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,10 +18,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_051149) do
     t.string "name"
     t.text "description"
     t.string "location"
-    t.datetime "date_time"
+    t.datetime "time"
     t.bigint "organizer_id", null: false
     t.integer "capacity"
-    t.boolean "cancelled", default: false
+    t.boolean "cancelled", default: false, default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organizer_id"], name: "index_events_on_organizer_id"
@@ -40,12 +40,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_051149) do
     t.string "username"
     t.string "first_name"
     t.string "last_name"
-    t.string "password"
+    t.string "password_digest"
     t.integer "role", default: 1
-    t.string "authentication_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "email"
+    t.string "authentication_token"
   end
 
   add_foreign_key "events", "users", column: "organizer_id"
