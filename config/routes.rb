@@ -4,7 +4,12 @@ Rails.application.routes.draw do
   # root "articles#index"
   namespace :api do
     namespace :v1 do
-      resources :users, only: [:create, :update] do
+      resources :users, only: [:create, :index] do
+        collection do
+          get :list_events
+          post :register
+          put :update
+        end
         member do
           put :deactivate
         end
