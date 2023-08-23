@@ -16,10 +16,21 @@ class UsersService
   end
 
   def update_user(current_user)
-    if current_user.update(params)
+    if current_user.update!(params)
       self.authentication_token = current_user.authentication_token
     else
       self.errors = current_user.errors.full_messages
+    end
+  end
+
+  def deactivate_user(user_id)
+    begin
+      user = User.find(user_id)
+      user.update!(active: false)
+    rescue ActiveRecord::RecordNotFound => error
+      self.errors = error.message
+    rescue ActiveRecord::RecordInvalid => error
+      self.errors = user.errors.full_messages
     end
   end
 end

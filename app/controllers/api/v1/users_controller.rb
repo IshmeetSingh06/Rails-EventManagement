@@ -1,6 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   skip_before_action :authenticate_user, only: [:create]
-  before_action :require_admin, only: [:create]
+  before_action :require_admin, only: [:deactivate]
 
   def create
     result = UsersService.new(user_params)
@@ -22,6 +22,16 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def deactivate
+    result = UsersService.new({})
+    result.deactivate_user(params[:id])
+    if result.errors.present?
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    else
+      render json: { message: "User Deleted Successfully" }, status: :ok
+    end
+  end
+
   private
   def user_params
     params.permit(:username, :email, :password, :first_name, :last_name, :role)
@@ -29,7 +39,7 @@ class Api::V1::UsersController < ApplicationController
 
   private
   def require_admin
-    unless @current_user&.admin?
+    unless current_user.admin?
       render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
