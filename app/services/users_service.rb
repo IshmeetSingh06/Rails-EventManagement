@@ -4,7 +4,7 @@ class UsersService
   def initialize(params = {})
     self.errors = {}
     self.params = params[:user_params]
-    self.current_user = params[:current_user]
+    self.current_user ||= params[:current_user]
   end
 
   def register_user

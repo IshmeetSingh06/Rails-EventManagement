@@ -14,6 +14,13 @@ Rails.application.routes.draw do
           put :deactivate
         end
       end
+
+      resources :events, only: [:create] do
+        member do
+          put :update
+          put :cancel
+        end
+      end
     end
   end
 end

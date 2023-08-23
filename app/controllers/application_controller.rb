@@ -15,8 +15,6 @@ class ApplicationController < ActionController::API
       end
     rescue ActiveRecord::RecordNotFound=> error
       render json: { error: "No User Associated with the token" }, status: :unprocessable_entity
-    else
-      render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
 end
