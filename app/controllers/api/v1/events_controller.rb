@@ -32,6 +32,18 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def index
+    result = EventsService.new
+    events = result.list_all
+    if result.errors.present?
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    elsif events.blank?
+      render json: { message: "No ongoing events" }, status: :ok
+    else
+      render json: events, status: :ok
+    end
+  end
+
+  def list_all_organized
     result = EventsService.new(current_user: current_user)
     events = result.list_all_organized
     if result.errors.present?

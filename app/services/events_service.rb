@@ -49,6 +49,14 @@ class EventsService
     end
   end
 
+  def list_all
+    begin
+      Event.where(cancelled: false)
+    rescue ActiveRecord::RecordNotFound => error
+      self.errors = error
+    end
+  end
+
   def list_all_organized
     begin
       current_user.organized_events

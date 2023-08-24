@@ -13,6 +13,7 @@ class User < ApplicationRecord
 
   enum role: { admin: 0, guest: 1 }
 
+  # bybug
   # def errors
   #   super.tap { |errors| errors.delete(:password, :blank) if self.admin? }
   # end

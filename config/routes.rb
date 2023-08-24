@@ -10,12 +10,17 @@ Rails.application.routes.draw do
           post :register
           put :update
         end
+
         member do
           put :deactivate
         end
       end
 
       resources :events, only: [:create, :index] do
+        collection do
+          get :list_all_organized
+        end
+
         member do
           put :update
           put :cancel
