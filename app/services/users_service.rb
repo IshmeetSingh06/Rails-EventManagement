@@ -7,72 +7,49 @@ class UsersService
     self.current_user = params[:current_user]
   end
 
-  def register_user
-    begin
-      user = User.create!(params)
+  def register
+    user = User.create(params)
+    if user.created_at?
       self.authentication_token = user.authentication_token
-    rescue ActiveRecord::RecordInvalid => error
-      self.errors = error
-    rescue ArgumentError => error
-      self.errors = error
     else
       self.errors = user.errors.full_messages
     end
   end
 
-  def update_user
-    begin
-      current_user.update!(params)
-    rescue ActiveRecord::RecordInvalid => error
-      self.errors = error
-    else
+  def update
+    unless current_user.update(params)
       self.errors = current_user.errors.full_messages
     end
   end
 
-  def deactivate_user(user_id)
-    begin
-      User.find(user_id).update!(active: false)
-    rescue ActiveRecord::RecordNotFound => error
-      self.errors = error
-    rescue ActiveRecord::RecordInvalid => error
-      self.errors = error
+  def deactivate(id)
+    user = User.find_by(id: id)
+    if user
+      user.update!(active: false)
     else
       self.errors = user.errors.full_messages
     end
   end
 
-  def list_all_events
-    begin
-      current_user.attended_events
-    rescue ActiveRecord::RecordInvalid => error
-      self.errors = error
-    else
-      self.errors = current_user.errors.full_messages
-    end
+  def attended_events
+    current_user.attended_events
   end
 
-  def register_event(event_id)
-    begin
-      event_from_id = Event.find(event_id)
-      if event_from_id.capacity > event_from_id.registrations.count
+  def register_event_attendee(event_id)
+    event = Event.find_by(id: event_id)
+    if event
+      if event.capacity > event.registrations.count
         Registration.create!(user_id: current_user.id, event_id: event_id)
-        event_from_id
+        event
       else
         self.errors = "Capacity Full, better luck next time"
       end
-    rescue ActiveRecord::RecordNotFound => error
-      self.errors = error
-    rescue ActiveRecord::RecordInvalid => error
-      self.errors = error
+    else
+      self.errors = "Event not found"
     end
   end
 
   def list_all
-    begin
-      User.all
-    rescue ActiveRecord::RecordNotFound => error
-      self.errors = error
-    end
+    User.all
   end
 end

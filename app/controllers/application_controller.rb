@@ -5,16 +5,10 @@ class ApplicationController < ActionController::API
 
   private
   def authenticate_user
-    begin
-      token = request.headers['Authorization']
-      user = User.find_by!(authentication_token: token)
-      if user.active?
-        self.current_user ||= user
-      else
-        render json: { error: 'User deactivated, contact admin' }, status: :unauthorized
-      end
-    rescue ActiveRecord::RecordNotFound=> error
-      render json: { error: "No User Associated with the token" }, status: :unprocessable_entity
+    token = request.headers['Authorization']
+    user = User.active.find_by(authentication_token: token)
+    if user
+      self.current_user = user
     else
       render json: { error: 'Unauthorized' }, status: :unauthorized
     end

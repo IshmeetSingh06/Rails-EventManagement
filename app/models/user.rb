@@ -8,14 +8,17 @@ class User < ApplicationRecord
   has_many :attended_events, through: :registrations, source: :event
 
   validates :username, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+  validates :email, presence: true, uniqueness: true,
+    format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
   validates_presence_of :first_name, :password
 
   enum role: { admin: 0, guest: 1 }
 
-  # def errors
-  #   super.tap { |errors| errors.delete(:password, :blank) if self.admin? }
-  # end
+  scope :active, -> { where active: true }
+
+  def errors
+    super.tap { |errors| errors.delete(:password, :blank) if !admin? }
+  end
 
   def serializable_hash(options = nil)
     super(options).except('authentication_token')
