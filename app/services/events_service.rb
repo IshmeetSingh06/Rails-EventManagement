@@ -4,73 +4,57 @@ class EventsService
   def initialize(params = {})
     self.errors = {}
     self.params = params[:event_params]
-    self.current_user ||= params[:current_user]
+    self.current_user = params[:current_user]
   end
 
-  def create_event
-    begin
-      event = Event.new(params)
-      event.organizer_id = current_user.id
-      event.save!
-    rescue ActiveRecord::RecordInvalid => error
-      self.errors = error
-    rescue ArgumentError => error
-      self.errors = error
-    else
+  def create
+    event = Event.new(params)
+    event.organizer_id = current_user.id
+    unless event.save
       self.errors = event.errors.full_messages
     end
   end
 
-  def update_event(event_id)
-    begin
-      event = Event.find(event_id)
-      event.update!(params)
-    rescue ActiveRecord::RecordNotFound => error
-      self.errors = error
-    rescue ActiveRecord::RecordInvalid => error
-      self.errors = error
+  def update(id)
+    event = Event.find_by(id: id)
+    if event
+      unless event.update(params)
+        self.errors = event.errors.full_messages
+      end
     else
-      self.errors = event.errors.full_messages
+      self.errors = "Event not found"
     end
   end
 
-  def cancel_event(event_id)
-    begin
-      event = Event.find(event_id)
-      event.update!(cancelled: true)
-      event.registrations.destroy_all
-    rescue ActiveRecord::RecordNotFound => error
-      self.errors = error
-    rescue ActiveRecord::RecordInvalid => error
-      self.errors = error
+  def cancel(id)
+    event = Event.find_by(id: id)
+    if event
+      unless event.update(cancelled: true)
+        self.errors = event.errors.full_messages
+      end
     else
-      self.errors = event.errors.full_messages
+      self.errors = "Event not found"
     end
   end
 
   def list_all
-    begin
-      Event.where(cancelled: false)
-    rescue ActiveRecord::RecordNotFound => error
-      self.errors = error
-    end
+    Event.all
+  end
+
+  def list_upcoming
+    Event.active.upcoming
   end
 
   def list_all_organized
-    begin
-      current_user.organized_events
-    rescue ActiveRecord::RecordNotFound => error
-      self.errors = error
-    end
+    current_user.organized_events
   end
 
-  def list_registrations(event_id)
-    begin
-      Event.find(event_id).registrations
-    rescue ActiveRecord::RecordNotFound => error
-      self.errors = error
-    rescue ArgumentError => error
-      self.errors = error
+  def list_registrations(id)
+    event = Event.find_by(id: id)
+    if event
+      event.registrations
+    else
+      self.errors = "Event not found"
     end
   end
 end

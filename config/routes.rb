@@ -15,13 +15,14 @@ Rails.application.routes.draw do
 
       resources :events, only: [:create, :index] do
         collection do
-          get :list_all_organized
+          get :organized
+          get :upcoming
         end
 
         member do
           put :update
           put :cancel
-          get :list_registrations
+          get :registrations
         end
       end
     end
