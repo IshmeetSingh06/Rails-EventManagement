@@ -20,9 +20,7 @@ class Api::V1::UsersController < ApplicationController
     if result.errors.present?
       render json: { errors: result.errors }, status: :unprocessable_entity
     else
-      render json:
-        { token: result.authentication_token, message: "User Updated Successfully" },
-        status: :created
+      render json: { message: "User Updated Successfully" }, status: :created
     end
   end
 

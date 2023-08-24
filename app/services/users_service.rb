@@ -23,7 +23,6 @@ class UsersService
   def update_user
     begin
       current_user.update!(params)
-      self.authentication_token = current_user.authentication_token
     rescue ActiveRecord::RecordInvalid => error
       self.errors = error
     else
