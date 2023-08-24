@@ -39,7 +39,6 @@ class EventsService
       event = Event.find(event_id)
       event.update!(cancelled: true)
       event.registrations.destroy_all
-      ##TODO: Email send
     rescue ActiveRecord::RecordNotFound => error
       self.errors = error
     rescue ActiveRecord::RecordInvalid => error
@@ -61,6 +60,16 @@ class EventsService
     begin
       current_user.organized_events
     rescue ActiveRecord::RecordNotFound => error
+      self.errors = error
+    end
+  end
+
+  def list_registrations(event_id)
+    begin
+      Event.find(event_id).registrations
+    rescue ActiveRecord::RecordNotFound => error
+      self.errors = error
+    rescue ArgumentError => error
       self.errors = error
     end
   end

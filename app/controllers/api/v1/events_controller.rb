@@ -55,6 +55,18 @@ class Api::V1::EventsController < ApplicationController
     end
   end
 
+  def list_registrations
+    result = EventsService.new
+    registrations = result.list_registrations(params[:id])
+    if result.errors.present?
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    elsif registrations.blank?
+      render json: { message: "No registrations for this event" }, status: :ok
+    else
+      render json: registrations, status: :ok
+    end
+  end
+
   private
   def event_params
     params.permit(:name, :description, :location, :time, :capacity)

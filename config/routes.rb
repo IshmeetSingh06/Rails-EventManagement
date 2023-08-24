@@ -24,6 +24,7 @@ Rails.application.routes.draw do
         member do
           put :update
           put :cancel
+          get :list_registrations
         end
       end
     end
