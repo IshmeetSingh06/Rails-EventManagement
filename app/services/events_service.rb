@@ -38,6 +38,7 @@ class EventsService
     begin
       event = Event.find(event_id)
       event.update!(cancelled: true)
+      event.registrations.destroy_all
       ##TODO: Email send
     rescue ActiveRecord::RecordNotFound => error
       self.errors = error
@@ -45,6 +46,14 @@ class EventsService
       self.errors = error
     else
       self.errors = event.errors.full_messages
+    end
+  end
+
+  def list_all_organized
+    begin
+      current_user.organized_events
+    rescue ActiveRecord::RecordNotFound => error
+      self.errors = error
     end
   end
 end

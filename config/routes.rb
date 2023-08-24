@@ -15,7 +15,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :events, only: [:create] do
+      resources :events, only: [:create, :index] do
         member do
           put :update
           put :cancel

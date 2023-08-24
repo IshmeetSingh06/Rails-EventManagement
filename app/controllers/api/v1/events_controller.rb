@@ -31,6 +31,18 @@ class Api::V1::EventsController < ApplicationController
     end
   end
 
+  def index
+    result = EventsService.new(current_user: current_user)
+    events = result.list_all_organized
+    if result.errors.present?
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    elsif events.blank?
+      render json: { message: "No organized events" }, status: :ok
+    else
+      render json: events, status: :ok
+    end
+  end
+
   private
   def event_params
     params.permit(:name, :description, :location, :time, :capacity)
@@ -39,7 +51,7 @@ class Api::V1::EventsController < ApplicationController
   private
   def require_admin
     unless current_user.admin?
-      render json: { error: 'Unauthorized' }, status: :unauthorized
+      render json: { error: 'Unauthorized access' }, status: :unauthorized
     end
   end
 end
