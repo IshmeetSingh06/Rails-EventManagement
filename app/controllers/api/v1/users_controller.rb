@@ -41,6 +41,8 @@ class Api::V1::UsersController < ApplicationController
     events = result.list_all_events
     if result.errors.present?
       render json: { errors: result.errors }, status: :unprocessable_entity
+    elsif events.blank?
+      render json: { message: "Not registered in any event!" }, status: :ok
     else
       render json: events, status: :ok
     end
@@ -70,13 +72,13 @@ class Api::V1::UsersController < ApplicationController
 
   private
   def user_params
-    params.permit(:username, :email, :password, :first_name, :last_name, :role)
+    params.permit(:username, :email, :password, :first_name, :last_name)
   end
 
   private
   def require_admin
     unless current_user.admin?
-      render json: { error: 'Unauthorized' }, status: :unauthorized
+      render json: { error: 'Unauthorized access' }, status: :unauthorized
     end
   end
 end

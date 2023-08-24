@@ -33,8 +33,7 @@ class UsersService
 
   def deactivate_user(user_id)
     begin
-      user = User.find(user_id)
-      user.update!(active: false)
+      User.find(user_id).update!(active: false)
     rescue ActiveRecord::RecordNotFound => error
       self.errors = error
     rescue ActiveRecord::RecordInvalid => error
