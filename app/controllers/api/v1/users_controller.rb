@@ -70,13 +70,11 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
-  private
-  def user_params
+  private def user_params
     params.permit(:username, :email, :password, :first_name, :last_name)
   end
 
-  private
-  def require_admin
+  private def require_admin
     unless current_user.admin?
       render json: { error: 'Unauthorized access' }, status: :unauthorized
     end
