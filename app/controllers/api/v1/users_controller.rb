@@ -20,9 +20,7 @@ class Api::V1::UsersController < ApplicationController
     if result.errors.present?
       render json: { errors: result.errors }, status: :unprocessable_entity
     else
-      render json:
-        { token: result.authentication_token, message: "User Updated Successfully" },
-        status: :created
+      render json: { message: "User Updated Successfully" }, status: :created
     end
   end
 
@@ -41,6 +39,8 @@ class Api::V1::UsersController < ApplicationController
     events = result.list_all_events
     if result.errors.present?
       render json: { errors: result.errors }, status: :unprocessable_entity
+    elsif events.blank?
+      render json: { message: "Not registered in any event!" }, status: :ok
     else
       render json: events, status: :ok
     end
@@ -70,7 +70,7 @@ class Api::V1::UsersController < ApplicationController
 
   private
   def user_params
-    params.permit(:username, :email, :password, :first_name, :last_name, :role)
+    params.permit(:username, :email, :password, :first_name, :last_name)
   end
 
   private
