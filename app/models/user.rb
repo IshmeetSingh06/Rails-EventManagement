@@ -24,8 +24,7 @@ class User < ApplicationRecord
     super(options).except('authentication_token')
   end
 
-  private
-  def generate_token
+  private def generate_token
     self.authentication_token = SecureRandom.hex(6)
   end
 end
