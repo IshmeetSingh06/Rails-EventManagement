@@ -63,6 +63,8 @@ class Api::V1::UsersController < ApplicationController
     users = result.list_all
     if result.errors.present?
       render json: { errors: result.errors }, status: :unprocessable_entity
+    elsif user.blank?
+      render json: { message: "No users are present" }, status: :ok
     else
       render json: users, status: :ok
     end
