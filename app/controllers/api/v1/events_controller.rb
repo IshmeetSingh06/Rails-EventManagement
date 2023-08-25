@@ -2,7 +2,7 @@ class Api::V1::EventsController < ApplicationController
   before_action :require_admin, except: [:upcoming]
 
   def create
-    service = EventsService.new(event_params: event_params, current_user: current_user)
+    service = EventsService.new(params: event_params, current_user: current_user)
     service.create
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
@@ -12,7 +12,7 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def update
-    service = EventsService.new(event_params: event_params)
+    service = EventsService.new(params: event_params)
     service.update(params[:id])
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
@@ -68,8 +68,8 @@ class Api::V1::EventsController < ApplicationController
   end
 
   def upcoming
-    service = EventsService.new
-    events = service.list_upcoming
+    service = GuestService.new
+    events = service.list_upcoming_events
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
     elsif events.blank?

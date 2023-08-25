@@ -35,4 +35,8 @@ class GuestService
       self.errors = "Capacity Full, better luck next time"
     end
   end
+
+  def list_upcoming_events
+    Event.active.upcoming
+  end
 end
