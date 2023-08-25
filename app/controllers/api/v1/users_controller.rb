@@ -3,7 +3,7 @@ class Api::V1::UsersController < ApplicationController
   before_action :require_admin, only: [:deactivate, :index]
 
   def create
-    service = UsersService.new(user_params: user_params)
+    service = GuestService.new(params: user_params)
     service.register
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
@@ -15,7 +15,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def update
-    service = UsersService.new(user_params: user_params, current_user: current_user)
+    service = GuestService.new(params: user_params, current_user: current_user)
     service.update
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
@@ -25,17 +25,17 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def deactivate
-    service = AdminService.new
-    service.deactivate_user(params[:id])
+    service = UsersService.new
+    service.deactivate(params[:id])
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
     else
-      render json: { message: "User Deleted Successfully" }, status: :ok
+      render json: { message: "User Deactivated Successfully" }, status: :ok
     end
   end
 
   def events
-    service = UsersService.new(current_user: current_user)
+    service = GuestService.new(current_user: current_user)
     events = service.attended_events
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
@@ -47,7 +47,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def attend_event
-    service = UsersService.new(current_user: current_user)
+    service = GuestService.new(current_user: current_user)
     event = service.register_event_attendee params[:event_id]
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
@@ -59,8 +59,8 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def index
-    service = AdminService.new
-    users = service.list_all_users
+    service = UsersService.new
+    users = service.list_all
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
     elsif users.blank?
