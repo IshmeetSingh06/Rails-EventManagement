@@ -1,6 +1,4 @@
 class Event < ApplicationRecord
-  before_update :destroy_registrations, if: :cancelled_changed?
-
   belongs_to :organizer, class_name: 'User', foreign_key: 'organizer_id'
   has_many :registrations
   has_many :attendees, through: :registrations, source: :user
@@ -12,10 +10,6 @@ class Event < ApplicationRecord
 
   scope :active, -> { where cancelled: false }
   scope :upcoming, -> { where 'time > ?', Time.current }
-
-  private def destroy_registrations
-    registrations.destroy_all
-  end
 
   private def already_cancelled
     self.errors.add(:base, 'Event is already cancelled') if self.cancelled_in_database
