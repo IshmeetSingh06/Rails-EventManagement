@@ -25,8 +25,8 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def deactivate
-    service = UsersService.new
-    service.deactivate(params[:id])
+    service = AdminService.new
+    service.deactivate_user(params[:id])
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
     else
@@ -59,8 +59,8 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def index
-    service = UsersService.new
-    users = service.list_all
+    service = AdminService.new
+    users = service.list_all_users
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
     elsif users.blank?
