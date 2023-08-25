@@ -20,10 +20,6 @@ class User < ApplicationRecord
     super.tap { |errors| errors.delete(:password, :blank) if admin? }
   end
 
-  def serializable_hash(options = nil)
-    super(options).except('authentication_token')
-  end
-
   private def generate_token
     self.authentication_token = SecureRandom.hex(6)
   end
