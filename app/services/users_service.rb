@@ -17,18 +17,7 @@ class UsersService
   end
 
   def update
-    unless current_user.update(params)
-      self.errors = current_user.errors.full_messages
-    end
-  end
-
-  def deactivate(id)
-    user = User.find_by(id: id)
-    if user
-      user.update!(active: false)
-    else
-      self.errors = user.errors.full_messages
-    end
+    self.errors = current_user.errors.full_messages unless current_user.update(params)
   end
 
   def attended_events
@@ -37,19 +26,13 @@ class UsersService
 
   def register_event_attendee(event_id)
     event = Event.find_by(id: event_id)
-    if event
-      if event.capacity > event.registrations.count
-        Registration.create!(user_id: current_user.id, event_id: event_id)
-        event
-      else
-        self.errors = "Capacity Full, better luck next time"
-      end
-    else
+    if event.blank?
       self.errors = "Event not found"
+    elsif event.capacity > event.registrations.count
+      Registration.create(user_id: current_user.id, event_id: event_id)
+      event
+    else
+      self.errors = "Capacity Full, better luck next time"
     end
-  end
-
-  def list_all
-    User.all
   end
 end

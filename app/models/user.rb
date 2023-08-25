@@ -17,7 +17,7 @@ class User < ApplicationRecord
   scope :active, -> { where active: true }
 
   def errors
-    super.tap { |errors| errors.delete(:password, :blank) if !admin? }
+    super.tap { |errors| errors.delete(:password, :blank) if admin? }
   end
 
   def serializable_hash(options = nil)
