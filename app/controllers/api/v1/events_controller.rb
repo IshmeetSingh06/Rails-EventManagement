@@ -69,7 +69,7 @@ class Api::V1::EventsController < ApplicationController
 
   def upcoming
     service = GuestService.new
-    events = service.list_upcoming_events
+    events = service.list_upcoming_events(params[:page].to_i)
     if service.errors.present?
       render json: { errors: service.errors }, status: :unprocessable_entity
     elsif events.blank?
