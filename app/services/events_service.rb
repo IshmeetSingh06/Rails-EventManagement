@@ -9,15 +9,21 @@ class EventsService
 
   def create
     event = Event.new(params.merge(organizer: current_user))
-    self.errors = event.errors.full_messages unless event.save
+    if event.save
+      event
+    else
+      self.errors = event.errors.full_messages
+    end
   end
 
   def update(id)
     event = Event.find_by(id: id)
     if event.blank?
       self.errors = "Event not found"
+    elsif event.update(params)
+      event
     else
-      self.errors = event.errors.full_messages unless event.update(params)
+      self.errors = event.errors.full_messages
     end
   end
 

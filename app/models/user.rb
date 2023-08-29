@@ -16,10 +16,6 @@ class User < ApplicationRecord
 
   scope :active, -> { where active: true }
 
-  def errors
-    super.tap { |errors| errors.delete(:password, :blank) }
-  end
-
   private def generate_token
     self.authentication_token ||= SecureRandom.hex(6)
   end

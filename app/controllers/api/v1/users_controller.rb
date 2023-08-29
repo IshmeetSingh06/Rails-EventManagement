@@ -4,23 +4,34 @@ class Api::V1::UsersController < ApplicationController
 
   def create
     service = GuestService.new(params: user_params)
-    service.register
+    user = service.register
     if service.errors.present?
-      render json: { errors: service.errors }, status: :unprocessable_entity
+      render json: { sucess: false, errors: service.errors }, status: :unprocessable_entity
     else
       render json:
-        { token: service.authentication_token, message: "User Created Successfully" },
+        {
+          sucess: true,
+          token: service.authentication_token,
+          message: "User Created Successfully",
+          user_details: user
+        },
         status: :created
     end
   end
 
   def update
     service = GuestService.new(params: user_params, current_user: current_user)
-    service.update
+    user = service.update
     if service.errors.present?
-      render json: { errors: service.errors }, status: :unprocessable_entity
+      render json: { sucess: false, errors: service.errors }, status: :unprocessable_entity
     else
-      render json: { message: "User Updated Successfully" }, status: :created
+      render json:
+        {
+          sucess: true,
+          message: "User Updated Successfully",
+          user_details: user
+        },
+        status: :ok
     end
   end
 
@@ -28,9 +39,9 @@ class Api::V1::UsersController < ApplicationController
     service = UsersService.new
     service.deactivate(params[:id])
     if service.errors.present?
-      render json: { errors: service.errors }, status: :unprocessable_entity
+      render json: { sucess: false, errors: service.errors }, status: :unprocessable_entity
     else
-      render json: { message: "User Deactivated Successfully" }, status: :ok
+      render json: { sucess: true, message: "User Deactivated Successfully" }, status: :ok
     end
   end
 
@@ -38,11 +49,9 @@ class Api::V1::UsersController < ApplicationController
     service = GuestService.new(current_user: current_user)
     events = service.attended_events
     if service.errors.present?
-      render json: { errors: service.errors }, status: :unprocessable_entity
-    elsif events.blank?
-      render json: { message: "Not registered in any event!" }, status: :ok
+      render json: { sucess: false, errors: service.errors }, status: :unprocessable_entity
     else
-      render json: events, status: :ok
+      render json: { sucess: true, events: events }, status: :ok
     end
   end
 
@@ -50,11 +59,15 @@ class Api::V1::UsersController < ApplicationController
     service = GuestService.new(current_user: current_user)
     event = service.register_event_attendee params[:event_id]
     if service.errors.present?
-      render json: { errors: service.errors }, status: :unprocessable_entity
+      render json: { sucess: false, errors: service.errors }, status: :unprocessable_entity
     else
       render json:
-      { message: "Registered for event with id = #{params[:event_id]}", event_details: event},
-      status: :ok
+        {
+          sucess: true,
+          message: "Registered for event with id = #{params[:event_id]}",
+          event_details: event
+        },
+        status: :ok
     end
   end
 
@@ -62,16 +75,14 @@ class Api::V1::UsersController < ApplicationController
     service = UsersService.new
     users = service.list_all
     if service.errors.present?
-      render json: { errors: service.errors }, status: :unprocessable_entity
-    elsif users.blank?
-      render json: { message: "No users are present" }, status: :ok
+      render json: { sucess: false, errors: service.errors }, status: :unprocessable_entity
     else
-      render json: users, status: :ok
+      render json: { sucess: true, users: users }, status: :ok
     end
   end
 
   private def user_params
-    params.permit(:username, :email, :password, :first_name, :last_name)
+    params.require(:user).permit(:username, :first_name, :last_name, :password, :email)
   end
 
   private def require_admin
