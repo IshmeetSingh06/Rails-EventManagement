@@ -10,7 +10,7 @@ class UsersService
     if user.blank?
       self.errors = "User not found"
     else
-      self.errors = user.errors.full_messages unless user.update!(active: false)
+      self.errors = user.errors.full_messages unless user.update(active: false)
     end
   end
 

@@ -8,16 +8,22 @@ class GuestService
   end
 
   def register
-    user = User.create(params)
-    if user.created_at?
+    user = User.new(params)
+    if user.save
       self.authentication_token = user.authentication_token
+      user.serializable_hash(except: [:authentication_token, :active])
     else
       self.errors = user.errors.full_messages
     end
   end
 
   def update
-    self.errors = current_user.errors.full_messages unless current_user.update(params)
+    if current_user.authenticate(params["password"])
+      self.errors = current_user.errors.full_messages unless current_user.update(params)
+      current_user.serializable_hash(except: :active) if self.errors.blank?
+    else
+      self.errors = "Wrong Password"
+    end
   end
 
   def attended_events
@@ -29,8 +35,9 @@ class GuestService
     if event.blank?
       self.errors = "Event not found"
     elsif event.capacity > event.registrations.count
-      Registration.create(user_id: current_user.id, event_id: event_id)
-      event
+      registration = Registration.new(user_id: current_user.id, event_id: event_id)
+      self.errors = registration.errors.full_messages unless registration.save
+      event if self.errors.blank?
     else
       self.errors = "Capacity Full, better luck next time"
     end
