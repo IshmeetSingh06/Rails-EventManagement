@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
   it { is_expected.to have_many(:organized_events).
     class_name('Event').with_foreign_key('organizer_id')
   }
-  it { should define_enum_for(:status) }
+  it { should define_enum_for(:role) }
   it { should allow_value('hello@hi.com').for(:email) }
   it { is_expected.to have_many(:attended_events).through(:registrations).source(:event) }
   it { is_expected.to validate_uniqueness_of(:username) }

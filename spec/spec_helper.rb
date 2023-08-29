@@ -91,4 +91,26 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+  # Clean up the database
+  require 'database_cleaner'
+  config.before(:suite) do
+    DatabaseCleaner.clean_with :truncation, {:only => ["users", "events", "registrations"]}
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:each, :js => true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each, :database) do
+    # open transaction
+    DatabaseCleaner.start
+  end
+
+  config.after(:each, :database) do
+    DatabaseCleaner.clean
+  end
 end
