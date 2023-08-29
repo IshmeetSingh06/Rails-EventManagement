@@ -12,7 +12,6 @@ RSpec.describe User, type: :model do
   it { is_expected.to validate_uniqueness_of(:username) }
   it { is_expected.to validate_uniqueness_of(:email) }
   it 'generates an authentication token before create' do
-    user = FactoryBot.create(:user)
-    expect(user.authentication_token).not_to be_nil
+    expect(FactoryBot.create(:user).authentication_token).not_to be_nil
   end
 end
