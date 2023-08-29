@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :user do
-    username { "admin" }
-    email { "email@email.com" }
+    username { "addsakkdsamindasdsa" }
+    email { "ekk@email.com" }
     password { 'password123' }
-    role { :guest }
+    role { 1 }
     first_name { "first_name" }
     last_name { "last_name" }
     active { true }
