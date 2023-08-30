@@ -43,19 +43,18 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "put #deactive" do
-    it "only inactive the user from Users" do
-      debugger
+    it "only set active to false for user" do
       put deactivate_api_v1_user_path(guest.id), headers: admin_header
-      puts response.body
+      guest.reload
       expect(response).to be_successful
-      expect(guest.reload.active).to eq(false)
+      expect(guest.active).to eq(false)
     end
   end
 
   describe 'get #events' do
     it 'loads the list of events attended by the user' do
       event = FactoryBot.create(:event, organizer: admin)
-      reg = FactoryBot.create(:registration, user: guest, event: event)
+      FactoryBot.create(:registration, user: guest, event: event)
       get events_api_v1_users_path, headers: guest_header
       expect(response).to be_successful
     end
