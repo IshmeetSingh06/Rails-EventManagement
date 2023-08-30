@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Event, type: :model do
+  let(:admin) { FactoryBot.create(:user, role: "admin") }
+
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:description) }
   it { is_expected.to validate_presence_of(:location) }
@@ -12,7 +14,6 @@ RSpec.describe Event, type: :model do
   it { is_expected.to have_many(:attendees).through(:registrations).source(:user) }
 
   it 'has an active scope' do
-    admin = FactoryBot.create(:user)
     active_event = FactoryBot.create(:event, cancelled: false, organizer: admin)
     inactive_event = FactoryBot.create(:event, cancelled: true, organizer: admin)
     expect(Event.active).to include(active_event)
@@ -20,12 +21,12 @@ RSpec.describe Event, type: :model do
   end
 
   it 'has an upcoming scope' do
-    event = FactoryBot.create(:event, time: 1.day.from_now)
+    event = FactoryBot.create(:event, time: 1.day.from_now, organizer: admin)
     expect(Event.upcoming).to include(event)
   end
 
   it 'validates that an already cancelled event cannot be updated' do
-    event = FactoryBot.create(:event, cancelled: true)
+    event = FactoryBot.create(:event, cancelled: true, organizer: admin)
     event.update(name: 'New Name')
     expect(event.errors.full_messages).to include('Event is already cancelled')
   end
