@@ -15,14 +15,14 @@ RSpec.describe Event, type: :model do
 
   describe '.scope' do
     it 'has an active scope' do
-      active_event = FactoryBot.create(:event, cancelled: false, organizer: admin)
+      active_event = FactoryBot.create(:event, organizer: admin)
       inactive_event = FactoryBot.create(:event, cancelled: true, organizer: admin)
       expect(Event.active).to include(active_event)
       expect(Event.active).not_to include(inactive_event)
     end
 
     it 'has an upcoming scope' do
-      event = FactoryBot.create(:event, time: 1.day.from_now, organizer: admin)
+      event = FactoryBot.create(:event, organizer: admin)
       expect(Event.upcoming).to include(event)
     end
   end
