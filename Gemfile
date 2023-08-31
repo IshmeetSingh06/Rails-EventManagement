@@ -46,3 +46,11 @@ group :development do
   # gem "spring"
 end
 
+group :test do
+  gem 'faker'
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'shoulda-matchers', '~> 5.0'
+  gem 'database_cleaner', '~> 2.0', '>= 2.0.2'
+end
+
