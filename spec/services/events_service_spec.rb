@@ -52,7 +52,7 @@ RSpec.describe EventsService, type: :service do
       expect(events.count).to eq(3)
     end
 
-    it 'returns an error message when no events are present' do
+    it 'loads an empty list when no events are present' do
       service = EventsService.new
       events = service.list_all
       expect(events).to be_empty
@@ -67,7 +67,7 @@ RSpec.describe EventsService, type: :service do
       expect(events.count).to eq(3)
     end
 
-    it 'returns an error message when the user has not organized any events' do
+    it 'loads an empty list when the user has not organized any events' do
       service = EventsService.new(current_user: admin)
       events = service.list_all_organized
       expect(events).to be_empty
