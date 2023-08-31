@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_104724) do
     t.datetime "time"
     t.bigint "organizer_id", null: false
     t.integer "capacity"
-    t.boolean "cancelled", default: false, default: false
+    t.boolean "cancelled", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organizer_id"], name: "index_events_on_organizer_id"
