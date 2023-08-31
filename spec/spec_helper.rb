@@ -94,7 +94,7 @@ RSpec.configure do |config|
   # Clean up the database
   require 'database_cleaner'
   config.before(:suite) do
-    DatabaseCleaner.clean_with :truncation, {:only => ["users", "events", "registrations"]}
+    DatabaseCleaner.clean_with :truncation, {:only => %w[users events registrations]}
   end
 
   config.before(:each) do
