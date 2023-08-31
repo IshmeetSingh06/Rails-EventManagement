@@ -13,21 +13,25 @@ RSpec.describe Event, type: :model do
   it { is_expected.to have_many(:registrations) }
   it { is_expected.to have_many(:attendees).through(:registrations).source(:user) }
 
-  it 'has an active scope' do
-    active_event = FactoryBot.create(:event, cancelled: false, organizer: admin)
-    inactive_event = FactoryBot.create(:event, cancelled: true, organizer: admin)
-    expect(Event.active).to include(active_event)
-    expect(Event.active).not_to include(inactive_event)
+  describe '.scope' do
+    it 'has an active scope' do
+      active_event = FactoryBot.create(:event, cancelled: false, organizer: admin)
+      inactive_event = FactoryBot.create(:event, cancelled: true, organizer: admin)
+      expect(Event.active).to include(active_event)
+      expect(Event.active).not_to include(inactive_event)
+    end
+
+    it 'has an upcoming scope' do
+      event = FactoryBot.create(:event, time: 1.day.from_now, organizer: admin)
+      expect(Event.upcoming).to include(event)
+    end
   end
 
-  it 'has an upcoming scope' do
-    event = FactoryBot.create(:event, time: 1.day.from_now, organizer: admin)
-    expect(Event.upcoming).to include(event)
-  end
-
-  it 'validates that an already cancelled event cannot be updated' do
-    event = FactoryBot.create(:event, cancelled: true, organizer: admin)
-    event.update(name: 'New Name')
-    expect(event.errors.full_messages).to include('Event is already cancelled')
+  describe '#cancelled' do
+    it 'validates that an already cancelled event cannot be updated' do
+      event = FactoryBot.create(:event, cancelled: true, organizer: admin)
+      event.update(name: 'New Name')
+      expect(event.errors.full_messages).to include('Event is already cancelled')
+    end
   end
 end
