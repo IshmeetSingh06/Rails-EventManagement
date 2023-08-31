@@ -14,4 +14,13 @@ RSpec.describe User, type: :model do
   it 'generates an authentication token before create' do
     expect(FactoryBot.create(:user).authentication_token).not_to be_nil
   end
+
+  describe '.scope' do
+    it 'has an active scope' do
+      active_user = FactoryBot.create(:user)
+      inactive_user = FactoryBot.create(:user, active: false)
+      expect(User.active).to include(active_user)
+      expect(User.active).not_to include(inactive_user)
+    end
+  end
 end
