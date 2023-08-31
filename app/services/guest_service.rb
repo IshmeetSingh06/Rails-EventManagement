@@ -42,4 +42,9 @@ class GuestService
       self.errors = "Capacity Full, better luck next time"
     end
   end
+
+  def list_upcoming_events(page)
+    page = 1 unless page > 0
+    Event.active.upcoming.offset((page - 1) * 10).limit(10)
+  end
 end

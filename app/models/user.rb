@@ -17,6 +17,6 @@ class User < ApplicationRecord
   scope :active, -> { where active: true }
 
   private def generate_token
-    self.authentication_token = SecureRandom.hex(6)
+    self.authentication_token ||= SecureRandom.hex(6)
   end
 end
