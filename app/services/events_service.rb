@@ -31,10 +31,8 @@ class EventsService
     event = Event.find_by(id: id)
     if event.blank?
       self.errors = "Event not found"
-    elsif event.update(cancelled: true)
-      EventMailer.cancelled(event: event).deliver_now
     else
-      self.errors = event.errors.full_messages
+      self.errors = event.errors.full_messages unless event.update(cancelled: true)
     end
   end
 

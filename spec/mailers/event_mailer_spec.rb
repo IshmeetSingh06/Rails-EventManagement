@@ -3,13 +3,12 @@ require 'rails_helper'
 RSpec.describe EventMailer, type: :mailer do
   let(:admin) { FactoryBot.create(:user, role: 'admin') }
   let(:event) { FactoryBot.create(:event) }
-  let(:mail) { EventMailer.cancelled(event: event) }
+  let(:mail) { EventMailer.cancelled(event) }
 
   before(:each) { FactoryBot.create_list(:registration, 5, event: event) }
 
   describe 'cancellation_email' do
     it 'sends the email' do
-      debugger
       expect { mail.deliver_now }.to change { ActionMailer::Base.deliveries.count }.by(1)
     end
 
