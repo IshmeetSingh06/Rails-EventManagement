@@ -1,7 +1,10 @@
 class EventMailer < ApplicationMailer
   def cancelled(params)
-    @user = params[:user]
     @event = params[:event]
-    mail(to: @user.email, subject: 'Event Cancelled')
+    mail(
+      to: @event.organizer.email,
+      bcc: @event.attendees.pluck(:email),
+      subject: 'Event Cancelled'
+    )
   end
 end

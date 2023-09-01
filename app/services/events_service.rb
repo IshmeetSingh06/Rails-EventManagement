@@ -31,9 +31,10 @@ class EventsService
     event = Event.find_by(id: id)
     if event.blank?
       self.errors = "Event not found"
+    elsif event.update(cancelled: true)
+      EventMailer.cancelled(event: event).deliver_now
     else
-      self.errors = event.errors.full_messages unless event.update(cancelled: true)
-      send_cancelled_email(event) if self.errors.blank?
+      self.errors = event.errors.full_messages
     end
   end
 
@@ -47,12 +48,10 @@ class EventsService
 
   def list_registrations(id)
     event = Event.find_by(id: id)
-    event ? event.registrations : self.errors = "Event not found"
-  end
-
-  private def send_cancelled_email(event)
-    event.attendees.each do |user|
-      EventMailer.cancelled(user: user, event: event).deliver_now
+    if event.blank?
+      self.errors = "Event not found"
+    else
+      event.registrations
     end
   end
 end
