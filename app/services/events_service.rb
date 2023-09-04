@@ -46,6 +46,10 @@ class EventsService
 
   def list_registrations(id)
     event = Event.find_by(id: id)
-    event ? event.registrations : self.errors = "Event not found"
+    if event.blank?
+      self.errors = "Event not found"
+    else
+      event.registrations
+    end
   end
 end
